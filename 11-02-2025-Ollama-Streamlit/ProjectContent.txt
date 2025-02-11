@@ -1,7 +1,12 @@
 Prerequists:-
 1) Install all necessary python libraries (If needed create a seperate venv)
+2) Ollama Running locally
+3) gemma2:2b model available.
 
-Ensure :- Document_store/pdf path is available.
+Ensure :- 
+1) Document_store/pdf path is available.
+
+About this project :- This project loads any PDF file and provide chat with the model. (Screenshots attached)
 
 To Run Streamlit
 streamlit run c:/Users/sesa407973/Desktop/Bits/SEM4/OllamaProjects/11-02-2025-Ollama-Streamlit/Langchain_Ollama1.py
