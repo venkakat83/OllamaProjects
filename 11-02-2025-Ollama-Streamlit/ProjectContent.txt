@@ -1,0 +1,7 @@
+Prerequists:-
+1) Install all necessary python libraries (If needed create a seperate venv)
+
+Ensure :- Document_store/pdf path is available.
+
+To Run Streamlit
+streamlit run c:/Users/sesa407973/Desktop/Bits/SEM4/OllamaProjects/11-02-2025-Ollama-Streamlit/Langchain_Ollama1.py
