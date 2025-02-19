@@ -1,0 +1,7 @@
+flask
+numpy
+requests
+bs4
+opencv-python
+flask-cors
+tensorflow
