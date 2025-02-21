@@ -49,7 +49,18 @@ def load_pdf_file(file_name):
     processed_chunks = chunk_documents(raw_docs)
     index_documents(processed_chunks)
 
+def print_all_ID():
+
+    for index, (id, doc) in enumerate(DOCUMENT_VECTOR_DB.store.items()):
+        if index < 10:
+            # docs have keys 'id', 'vector', 'text', 'metadata'
+            DOCUMENT_VECTOR_DB.delete(ids=id)
+            print(f"{id}: {doc['text']}")
+        else:
+            break
+
 def load_pdf_documents(file_path):
+    print_all_ID()
     is_successful = DOCUMENT_VECTOR_DB.delete()
     print(is_successful)
     document_loader = PDFPlumberLoader(file_path)
