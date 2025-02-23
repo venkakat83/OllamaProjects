@@ -7,43 +7,48 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama.llms import OllamaLLM
 import os
 import requests
-from Utility import load_pdf_file, read_pdfs_from_directory, find_related_documents, generate_answer
-import Utility
+from Utility import load_chorma_db, find_related_documents_in_chromaDB, generate_answer
+from dotenv import load_dotenv
+load_dotenv()
 
-st.markdown("""
-    <style>
-    .stApp {
-        background-color: #000000;
-        color: #FFFFFF;
-    }
+## open Langsmith to see all the interactions
+os.environ["LANGCHAIN_API_KEY"] = os.getenv("LANGCHAIN_API_KEY")
+os.environ["LANGCHAIN_TRACING_V2"] = "true"
+
+# st.markdown("""
+#     <style>
+#     .stApp {
+#         background-color: #000000;
+#         color: #FFFFFF;
+#     }
     
-    /* Chat Input Styling */
-    .stChatInput input {
-        background-color: #1E1E1E !important;
-        color: #FFFFFF !important;
-        border: 1px solid #3A3A3A !important;
-    }
+#     /* Chat Input Styling */
+#     .stChatInput input {
+#         background-color: #1E1E1E !important;
+#         color: #FFFFFF !important;
+#         border: 1px solid #3A3A3A !important;
+#     }
     
-    /* Custom Reset Button Styling */
-    .stButton > button {
-        background-color: #FF4B4B !important;
-        color: #FFFFFF !important;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-    }
+#     /* Custom Reset Button Styling */
+#     .stButton > button {
+#         background-color: #FF4B4B !important;
+#         color: #FFFFFF !important;
+#         border: none;
+#         padding: 10px 20px;
+#         border-radius: 5px;
+#         cursor: pointer;
+#     }
     
-    .stButton > button:hover {
-        background-color: #FF0000 !important;
-    }
+#     .stButton > button:hover {
+#         background-color: #FF0000 !important;
+#     }
     
-    /* Custom File Uploader Styling */
-    .stFileUploader label {
-        color: #00FFAA !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+#     /* Custom File Uploader Styling */
+#     .stFileUploader label {
+#         color: #00FFAA !important;
+#     }
+#     </style>
+#     """, unsafe_allow_html=True)
 
 PROMPT_TEMPLATE = """
 You are an expert research assistant. Use the provided context to answer the query. 
@@ -53,8 +58,7 @@ Query: {user_query}
 Context: {document_context} 
 Answer:
 """
-
-PDF_STORAGE_PATH = 'document_store/pdfs/'
+selected_image =""
 
 st.title("🤖 Schneider Document AI")
 st.markdown("Your Intelligent Document Assistant")
@@ -86,8 +90,7 @@ if st.session_state.uploaded_image:
         if response.status_code == 200:
             st.success("✅ Image processed successfully!")
             st.write("Response from backend:", response.json())
-            # print(response.json()["label"])
-            load_pdf_file(response.json()["label"])
+            selected_image = response.json()["label"]
         else:
             st.error("❌ Failed to process the image. Please try again.")
 
@@ -95,6 +98,12 @@ if st.session_state.uploaded_image:
 if st.button("Reset"):
     st.session_state.uploaded_image = None
     st.rerun()
+
+db_location = "../chromadb_ollama"
+embeddings_ollama = OllamaEmbeddings(model="gemma2:2b")
+collection_name = "chromadb_ollama"
+chroma_db = load_chorma_db(db_location, embeddings_ollama, collection_name)
+print(chroma_db.get())
 
 
 # read_pdfs_from_directory(PDF_STORAGE_PATH) 
@@ -105,39 +114,14 @@ if user_input:
             st.write(user_input)
         
         with st.spinner("Analyzing document..."):
-            relevant_docs = find_related_documents(user_input)
-            ai_response = generate_answer(user_input, relevant_docs)
+            if chroma_db:
+                selected_pdf = "document_store/pdfs/"+ selected_image +".pdf"
+                print(selected_pdf)
+                relevant_docs = find_related_documents_in_chromaDB(chroma_db, user_input, selected_pdf)
+                print(relevant_docs)
+                ai_response = generate_answer(user_input, relevant_docs)
+            else:
+                st.write("Failed to Load ChromaDB")
             
         with st.chat_message("assistant", avatar="🤖"):
             st.write(ai_response)
-
-# File Upload Section
-# uploaded_pdf = st.file_uploader(
-#     "Upload Research Document (PDF)",
-#     type="pdf",
-#     help="Select a PDF document for analysis",
-#     accept_multiple_files=False
-
-# )
-
-# if uploaded_pdf:
-#     saved_path = Utility.save_uploaded_file(uploaded_pdf)
-#     raw_docs = Utility.load_pdf_documents(saved_path)
-#     processed_chunks = Utility.chunk_documents(raw_docs)
-#     Utility.index_documents(processed_chunks)
-    
-#     st.success("✅ Document processed successfully! Ask your questions below.")
-    
-#     user_input = st.chat_input("Enter your question about the document...")
-    
-#     if user_input:
-#         with st.chat_message("user"):
-#             st.write(user_input)
-        
-#         with st.spinner("Analyzing document..."):
-#             relevant_docs = find_related_documents(user_input)
-#             ai_response = generate_answer(user_input, relevant_docs)
-            
-#         with st.chat_message("assistant", avatar="🤖"):
-#             st.write(ai_response)
-

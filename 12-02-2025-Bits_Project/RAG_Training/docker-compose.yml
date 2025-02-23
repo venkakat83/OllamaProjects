@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - chromadb_data:/app/chromadb
+    environment:
+      - PDF_STORAGE_PATH=/app/document_store/pdfs/
+
+volumes:
+  chromadb_data:

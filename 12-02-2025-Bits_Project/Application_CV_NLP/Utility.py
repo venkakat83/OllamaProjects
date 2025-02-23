@@ -5,6 +5,8 @@ from langchain_ollama import OllamaEmbeddings
 from langchain_core.vectorstores import InMemoryVectorStore
 from langchain_ollama.llms import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_chroma import Chroma
+from langchain_ollama import OllamaEmbeddings
 
 
 PROMPT_TEMPLATE = """
@@ -20,7 +22,25 @@ PDF_STORAGE_PATH = 'document_store/pdfs/'
 EMBEDDING_MODEL = OllamaEmbeddings(model="gemma2:2b")
 DOCUMENT_VECTOR_DB = InMemoryVectorStore(EMBEDDING_MODEL)
 LANGUAGE_MODEL = OllamaLLM(model="gemma2:2b")
+
 directory = ""
+
+
+def load_chorma_db(db_dircetory, embeddings_ollama, collection_name):
+    chromaDB = Chroma(embedding_function=embeddings_ollama, 
+                collection_name=collection_name, 
+                persist_directory=db_dircetory)
+    return chromaDB
+
+def find_related_documents_in_chromaDB(db, query, selected_pdf):
+    return db.similarity_search(query, filter={"source": selected_pdf}, k=2)
+
+def generate_answer(user_query, context_documents):
+    context_text = "\n\n".join([doc.page_content for doc in context_documents])
+    conversation_prompt = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
+    response_chain = conversation_prompt | LANGUAGE_MODEL
+    return response_chain.invoke({"user_query": user_query, "document_context": context_text})
+
 
 def read_pdfs_from_directory(directory):
     directory = directory
