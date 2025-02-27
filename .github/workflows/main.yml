@@ -24,7 +24,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r ./12-02-2025-Bits_Project/RAG_Training/requirements.txt
 
       - name: Generate ChromaDB Ollama
         run: |
