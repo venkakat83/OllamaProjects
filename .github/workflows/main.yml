@@ -31,7 +31,7 @@ jobs:
           python SchneiderProductContentTraining.py
 
       - name: Upload ChromaDB Ollama
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: chromadb_ollama
           path: ../chromadb_ollama
