@@ -4,3 +4,4 @@ langchain_ollama
 pdfplumber
 langchain-chroma
 langchain_text_splitters
+tensorflow
