@@ -26,6 +26,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r ./12-02-2025-Bits_Project/RAG_Training/requirements.txt
 
+      - name: Install ollama
+        run: |
+          pip install ollama
+
       - name: Generate ChromaDB Ollama
         run: |
           python 12-02-2025-Bits_Project/RAG_Training/SchneiderProductContentTraining.py
