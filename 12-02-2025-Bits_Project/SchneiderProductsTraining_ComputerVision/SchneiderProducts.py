@@ -1,8 +1,9 @@
 import os
 import tensorflow as tf
-base_dir = os.getcwd()
-train_data_dir = os.path.join(base_dir , 'Products', 'train')
-test_data_dir = os.path.join(base_dir , 'Products', 'test')
+
+base_dir = os.path.dirname(os.path.abspath(__file__))
+train_data_dir = os.path.join(base_dir, 'Products', 'train')
+test_data_dir = os.path.join(base_dir, 'Products', 'test')
 
 IMAGE_WIDTH = 224
 IMAGE_HEIGHT = 224
@@ -66,4 +67,4 @@ val_acc = history.history['val_accuracy']
 loss = history.history['loss']
 val_loss = history.history['val_loss']
 
-model.save(base_dir+'SchneiderProducts.h5')
+model.save(os.path.join(base_dir, 'SchneiderProducts.h5'))
