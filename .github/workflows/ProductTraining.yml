@@ -29,3 +29,9 @@ jobs:
       - name: Generate CV Model
         run: |
           python 12-02-2025-Bits_Project/SchneiderProductsTraining_ComputerVision/SchneiderProducts.py
+
+      - name: Upload SchneiderProducts model
+        uses: actions/upload-artifact@v4
+        with:
+          name: SchneiderProducts_model
+          path: 12-02-2025-Bits_Project/SchneiderProductsTraining_ComputerVision/SchneiderProducts.h5
