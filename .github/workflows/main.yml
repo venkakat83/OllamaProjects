@@ -32,7 +32,7 @@ jobs:
 
       - name: Generate ChromaDB Ollama
         run: |
-          python 12-02-2025-Bits_Project/RAG_Training/SchneiderProductContentTraining.py
+          python 12-02-2025-Bits_Project/RAG_Training/SchneiderProductContentTraining_github.py
 
       - name: Upload ChromaDB Ollama
         uses: actions/upload-artifact@v4
