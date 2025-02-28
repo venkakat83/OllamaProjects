@@ -9,7 +9,7 @@ chromaDB = Chroma(embedding_function=embeddings_ollama,
                 collection_name="chromadb_ollama", 
                 persist_directory="../chromadb_ollama")
 
-PDF_STORAGE_PATH = './document_store/pdfs/'
+PDF_STORAGE_PATH = 'document_store/pdfs/'
 EMBEDDING_MODEL = OllamaEmbeddings(model="gemma2:2b")
 
 def read_pdfs_from_directory(directory):
