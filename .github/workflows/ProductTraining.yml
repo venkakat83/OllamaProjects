@@ -1,4 +1,4 @@
-name: Generate ChromaDB Ollama
+name: Generate CV Model
 
 on:
   push:
