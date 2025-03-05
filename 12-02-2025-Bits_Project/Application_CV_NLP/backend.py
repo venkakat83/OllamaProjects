@@ -80,7 +80,7 @@ def upload_image():
     label_index = process_image(file)
     label_name = label_map.get(label_index, 'Unknown')
     print(label_name)
-    scraped_info = "scrape_website(label_name)"
+    scraped_info = scrape_website(label_name)
     print(scraped_info)
     return jsonify({'message': 'Image processed successfully', 'label': label_name, 'info': scraped_info}), 200
 
